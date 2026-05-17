@@ -159,7 +159,7 @@ Cada sesión dura 3 horas (15:30–18:30) e incluye 20 min de descanso. Los bloq
 | `requirements.txt` | Completo | Versiones fijas de las 7 dependencias |
 | `.gitignore` | Completo | `__pycache__/`, `*.pyc`, `*.db`, `.claude/`, `venv/` |
 | `aplicacion/` (5 archivos) | Completo en `main` | API funcional con comentarios en castellano |
-| 5 ramas de escenarios | Completo y pusheadas | PRs abiertos contra `main` en GitHub |
+| 5 ramas de escenarios | Completo y pusheadas | 5 PRs abiertos contra `main` en GitHub (#1 al #5, uno por escenario) |
 | `README.md` | Vacío intencionalmente | Forma parte del escenario 4. No añadir contenido. |
 
 ### Pendientes
