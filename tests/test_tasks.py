@@ -49,6 +49,38 @@ def _create_task(client, **kwargs):
     return resp.json()
 
 
+def test_list_tasks_by_status_returns_matching_tasks(client):
+    """Filtrar por estado devuelve solo las tareas con ese estado."""
+    _create_task(client, title="T1", status="pending")
+    _create_task(client, title="T2", status="in_progress")
+    _create_task(client, title="T3", status="pending")
+
+    resp = client.get("/tasks/status/pending")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 2
+    assert all(t["status"] == "pending" for t in data)
+
+    resp = client.get("/tasks/status/in_progress")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+    assert data[0]["title"] == "T2"
+
+
+def test_list_tasks_by_status_empty(client):
+    """Si no hay tareas con el estado solicitado devuelve lista vacía."""
+    resp = client.get("/tasks/status/done")
+    assert resp.status_code == 200
+    assert resp.json() == []
+
+
+def test_list_tasks_by_status_invalid_status_returns_422(client):
+    """Un valor de estado inválido devuelve 422."""
+    resp = client.get("/tasks/status/invalid_status")
+    assert resp.status_code == 422
+
+
 def test_update_task_with_done_status_returns_400(client):
     """Modificar una tarea con estado done debe devolver 400."""
     task = _create_task(client, status="done")
