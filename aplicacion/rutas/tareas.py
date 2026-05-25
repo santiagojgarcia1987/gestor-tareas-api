@@ -13,6 +13,7 @@ from aplicacion.modelos import Task, TaskStatus
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
+# Busca una tarea por id; lanza 404 si no existe
 def get_task_or_404(task_id: int, db: Session) -> Task:
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
