@@ -111,6 +111,33 @@ def update_task(task_id: int, payload: TaskUpdate, db: Session = Depends(get_db)
     return task
 
 
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
+def delete_all_tasks(db: Session = Depends(get_db)):
+    """Elimina todas las tareas de la base de datos.
+
+    Si no existen tareas, devuelve un error 404.
+
+    Args:
+        db (Session): Sesión de base de datos inyectada por
+            FastAPI mediante la dependencia ``get_db``.
+
+    Returns:
+        None: Respuesta vacía con código de estado HTTP 204.
+
+    Raises:
+        HTTPException: Error 404 si no existen tareas para
+            eliminar.
+    """
+    count = db.query(Task).count()
+    if count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No tasks to delete",
+        )
+    db.query(Task).delete()
+    db.commit()
+
+
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(task_id: int, db: Session = Depends(get_db)):
     """Elimina una tarea de la base de datos.
