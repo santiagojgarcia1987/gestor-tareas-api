@@ -84,6 +84,7 @@ La documentación interactiva (Swagger UI) estará en `http://127.0.0.1:8000/doc
 | `GET` | `/tasks/{id}` | Obtiene una tarea por su identificador |
 | `POST` | `/tasks/` | Crea una nueva tarea |
 | `PATCH` | `/tasks/{id}` | Actualiza parcialmente una tarea |
+| `DELETE` | `/tasks/` | Elimina todas las tareas |
 | `DELETE` | `/tasks/{id}` | Elimina una tarea |
 
 ### Ejemplo rápido

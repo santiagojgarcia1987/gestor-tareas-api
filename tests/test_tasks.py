@@ -95,3 +95,24 @@ def test_update_task_set_to_done_then_reject_further_updates(client):
     resp = client.patch(f"/tasks/{task['id']}", json={"title": "Hacked"})
     assert resp.status_code == 400
     assert resp.json()["detail"] == "Cannot update a completed task"
+
+
+def test_delete_all_tasks_removes_every_task(client):
+    """Eliminar todas las tareas deja la lista vacía."""
+    _create_task(client, title="Task 1")
+    _create_task(client, title="Task 2")
+    _create_task(client, title="Task 3")
+
+    resp = client.delete("/tasks/")
+    assert resp.status_code == 204
+
+    resp = client.get("/tasks/")
+    assert resp.status_code == 200
+    assert resp.json() == []
+
+
+def test_delete_all_tasks_empty_db_returns_404(client):
+    """Intentar eliminar todas las tareas sin tareas existentes devuelve 404."""
+    resp = client.delete("/tasks/")
+    assert resp.status_code == 404
+    assert resp.json()["detail"] == "No tasks to delete"
