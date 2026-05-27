@@ -101,6 +101,11 @@ Los tests usan una base de datos SQLite en memoria con `StaticPool` para garanti
 - No conectar a la base de datos de producción (`tareas.db`) desde los tests.
 - Los tests de casos de error deben verificar tanto el código de estado HTTP como el campo `detail` del cuerpo de respuesta.
 
+### DOCUMENTACIÓN EN PRs:
+  - Cada PR debe incluir docstrings actualizados en las funciones modificadas.
+  - actualización del README si se añaden o modifican endpoints.
+  - descripción del PR con qué cambió, por qué cambió y cómo probarlo.
+
 ### Git
 - Un commit por cambio lógico; mensaje en formato `tipo: descripción breve` (feat, fix, refactor, docs, pruebas).
 - No hacer commit de `tareas.db`, `__pycache__/` ni archivos `.pyc`.
