@@ -175,3 +175,59 @@ def test_list_tasks_includes_priority(client):
     priorities = [t["priority"] for t in resp.json()]
     assert "high" in priorities
     assert "low" in priorities
+
+
+# ── Tests del campo categoría ──────────────────────────────────────────
+
+
+def test_create_task_default_category_is_other(client):
+    """Crear una tarea sin indicar categoría debe asignar 'other'."""
+    task = _create_task(client)
+    assert task["category"] == "other"
+
+
+def test_create_task_with_explicit_category(client):
+    """Crear una tarea con categoría explícita debe respetar el valor enviado."""
+    for category in ("work", "personal", "shopping", "other"):
+        task = _create_task(client, category=category)
+        assert task["category"] == category
+
+
+def test_create_task_with_invalid_category_returns_422(client):
+    """Crear una tarea con un valor de categoría no válido devuelve 422."""
+    resp = client.post("/tasks/", json={"title": "Tarea inválida", "category": "urgent"})
+    assert resp.status_code == 422
+
+
+def test_update_task_category(client):
+    """Actualizar la categoría de una tarea pendiente debe funcionar."""
+    task = _create_task(client)
+    resp = client.patch(f"/tasks/{task['id']}", json={"category": "work"})
+    assert resp.status_code == 200
+    assert resp.json()["category"] == "work"
+
+
+def test_update_task_invalid_category_returns_422(client):
+    """Actualizar la categoría con un valor no válido devuelve 422."""
+    task = _create_task(client)
+    resp = client.patch(f"/tasks/{task['id']}", json={"category": "fitness"})
+    assert resp.status_code == 422
+
+
+def test_get_task_includes_category(client):
+    """Obtener una tarea por id debe incluir el campo categoría."""
+    task = _create_task(client, category="personal")
+    resp = client.get(f"/tasks/{task['id']}")
+    assert resp.status_code == 200
+    assert resp.json()["category"] == "personal"
+
+
+def test_list_tasks_includes_category(client):
+    """Listar tareas debe incluir el campo categoría en cada elemento."""
+    _create_task(client, category="work")
+    _create_task(client, category="shopping")
+    resp = client.get("/tasks/")
+    assert resp.status_code == 200
+    categories = [t["category"] for t in resp.json()]
+    assert "work" in categories
+    assert "shopping" in categories

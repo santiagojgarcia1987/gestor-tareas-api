@@ -1,6 +1,6 @@
 # Gestor de Tareas API
 
-API REST para gestionar el ciclo de vida de tareas, construida con **FastAPI** y **SQLAlchemy**. Permite crear, consultar, actualizar y eliminar tareas. Cada tarea cuenta con un identificador único, título, descripción opcional, estado (`pending`, `in_progress`, `done`), prioridad (`low`, `medium`, `high`; por defecto `medium`) y fecha de creación automática.
+API REST para gestionar el ciclo de vida de tareas, construida con **FastAPI** y **SQLAlchemy**. Permite crear, consultar, actualizar y eliminar tareas. Cada tarea cuenta con un identificador único, título, descripción opcional, estado (`pending`, `in_progress`, `done`), prioridad (`low`, `medium`, `high`; por defecto `medium`), categoría (`work`, `personal`, `shopping`, `other`; por defecto `other`) y fecha de creación automática.
 
 ## Stack tecnológico
 
@@ -93,10 +93,11 @@ Crear una tarea:
 ```bash
 curl -X POST http://127.0.0.1:8000/tasks/ \
   -H "Content-Type: application/json" \
-  -d '{"title": "Mi primera tarea", "priority": "high"}'
+  -d '{"title": "Mi primera tarea", "priority": "high", "category": "work"}'
 ```
 
 Si no se indica `priority`, la tarea se crea con prioridad `medium`.
+Si no se indica `category`, la tarea se crea con categoría `other`.
 
 ## Ejecución de tests
 
