@@ -95,3 +95,27 @@ def test_update_task_set_to_done_then_reject_further_updates(client):
     resp = client.patch(f"/tasks/{task['id']}", json={"title": "Hacked"})
     assert resp.status_code == 400
     assert resp.json()["detail"] == "Cannot update a completed task"
+
+
+def test_update_task_short_title_returns_422(client):
+    """Actualizar una tarea con título de menos de 3 caracteres devuelve 422."""
+    task = _create_task(client)
+    resp = client.patch(f"/tasks/{task['id']}", json={"title": "AB"})
+    assert resp.status_code == 422
+    assert resp.json()["detail"] == "Title must be at least 3 characters long"
+
+
+def test_update_task_empty_title_returns_422(client):
+    """Actualizar una tarea con título vacío devuelve 422."""
+    task = _create_task(client)
+    resp = client.patch(f"/tasks/{task['id']}", json={"title": ""})
+    assert resp.status_code == 422
+    assert resp.json()["detail"] == "Title must be at least 3 characters long"
+
+
+def test_update_task_title_exactly_3_chars_succeeds(client):
+    """Actualizar una tarea con título de exactamente 3 caracteres es válido."""
+    task = _create_task(client)
+    resp = client.patch(f"/tasks/{task['id']}", json={"title": "ABC"})
+    assert resp.status_code == 200
+    assert resp.json()["title"] == "ABC"
