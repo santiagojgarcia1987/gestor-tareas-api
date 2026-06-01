@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from aplicacion.base_de_datos import get_db
 from aplicacion.esquemas import TaskCreate, TaskResponse, TaskUpdate
-from aplicacion.modelos import Task, TaskStatus
+from aplicacion.modelos import Task, TaskPriority, TaskStatus
 
 # Router con prefijo /tasks; agrupa todos los endpoints de tareas
 router = APIRouter(prefix="/tasks", tags=["tasks"])
@@ -16,6 +16,8 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 @router.get("/", response_model=List[TaskResponse])
 def list_tasks(db: Session = Depends(get_db)):
     """Obtiene la lista completa de tareas almacenadas.
+
+    Cada tarea incluye su prioridad (``low``, ``medium`` o ``high``).
 
     Args:
         db (Session): Sesión de base de datos inyectada por
@@ -31,6 +33,8 @@ def list_tasks(db: Session = Depends(get_db)):
 @router.get("/{task_id}", response_model=TaskResponse)
 def get_task(task_id: int, db: Session = Depends(get_db)):
     """Obtiene una tarea por su identificador único.
+
+    La respuesta incluye la prioridad asignada a la tarea.
 
     Args:
         task_id (int): Identificador numérico de la tarea.
@@ -56,7 +60,8 @@ def create_task(payload: TaskCreate, db: Session = Depends(get_db)):
 
     Args:
         payload (TaskCreate): Esquema con los datos de la tarea a
-            crear. Solo el título es obligatorio.
+            crear. Solo el título es obligatorio. La prioridad
+            es opcional y por defecto vale ``medium``.
         db (Session): Sesión de base de datos inyectada por
             FastAPI mediante la dependencia ``get_db``.
 
@@ -78,6 +83,7 @@ def update_task(task_id: int, payload: TaskUpdate, db: Session = Depends(get_db)
 
     Solo se modifican los campos incluidos en el cuerpo de la
     petición. No se permite actualizar tareas en estado ``done``.
+    Se puede modificar la prioridad (``low``, ``medium``, ``high``).
 
     Args:
         task_id (int): Identificador numérico de la tarea a
